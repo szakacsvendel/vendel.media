@@ -13,7 +13,7 @@ const SITE = {
     en: "Szakács Vendel is a Budapest-based photographer and videographer specializing in portraits, family and team photography, vehicles and events."
   },
   location: { hu: "Budapest, Magyarország", en: "Based in Budapest, Hungary" },
-  heroImage: "/images/vendel.webp",
+  heroImage: "/images/vendel.avif",
   email: "vendelsz08@gmail.com",
   phone: "+36 20 512 0212",
   formAction: "",
@@ -22,7 +22,7 @@ const SITE = {
     { label: "TikTok", url: "https://tiktok.com/@yourhandle" }
   ],
   about: {
-    photo: "/images/aboutme.webp",
+    photo: "/images/aboutme.avif",
     title: { hu: "Rólam", en: "About me" },
     paragraphs: [
       {
@@ -59,23 +59,23 @@ const CATEGORIES = [
       hu: "Kötetlen portré képeim, egyedi stílusokban.",
       en: "My candid portraits, each with a distinct style."
     },
-    thumbnail: "/categories/portraits/SZV_0434.webp",
+    thumbnail: "/categories/portraits/SZV_0434.avif",
     items: categoryImages("portraits", [
-      "SZV_0433.webp",
-      "SZV_0434.webp",
-      "SZV_0443.webp",
-      "SZV_0464.webp",
-      "SZV_0476.webp",
-      "SZV_0483.webp",
-      "SZV_0484.webp",
-      "SZV_2047.webp",
-      "SZV_2052.webp",
-      "SZV_2054.webp",
-      "SZV_2056.webp",
-      "SZV_2073.webp",
-      "SZV_2086.webp",
-      "SZV_2092.webp",
-      "SZV_2093.webp"
+      "SZV_0433.avif",
+      "SZV_0434.avif",
+      "SZV_0443.avif",
+      "SZV_0464.avif",
+      "SZV_0476.avif",
+      "SZV_0483.avif",
+      "SZV_0484.avif",
+      "SZV_2047.avif",
+      "SZV_2052.avif",
+      "SZV_2054.avif",
+      "SZV_2056.avif",
+      "SZV_2073.avif",
+      "SZV_2086.avif",
+      "SZV_2092.avif",
+      "SZV_2093.avif"
     ])
   },
   {
@@ -85,27 +85,27 @@ const CATEGORIES = [
       hu: "Forma, részletek, hangulat - autókról és motorokról, akár eladáshoz, akár csak felvágni.",
       en: "Shape, detail and character - cars and bikes, whether for a sale or simply because it is cool."
     },
-    thumbnail: "/categories/vehicles/SZV_0578.webp",
+    thumbnail: "/categories/vehicles/SZV_0578.avif",
     items: categoryImages("vehicles", [
-      "SZV_0387-Enhanced-NR.webp",
-      "SZV_0392-Enhanced-NR.webp",
-      "SZV_0395-Enhanced-NR.webp",
-      "SZV_0399-Enhanced-NR.webp",
-      "SZV_0551.webp",
-      "SZV_0553.webp",
-      "SZV_0558.webp",
-      "SZV_0560.webp",
-      "SZV_0563.webp",
-      "SZV_0566.webp",
-      "SZV_0568.webp",
-      "SZV_0573.webp",
-      "SZV_0574.webp",
-      "SZV_0577.webp",
-      "SZV_0578.webp",
-      "SZV_0615.webp",
-      "SZV_0619.webp",
-      "SZV_0621.webp",
-      "SZV_0627.webp"
+      "SZV_0387-Enhanced-NR.avif",
+      "SZV_0392-Enhanced-NR.avif",
+      "SZV_0395-Enhanced-NR.avif",
+      "SZV_0399-Enhanced-NR.avif",
+      "SZV_0551.avif",
+      "SZV_0553.avif",
+      "SZV_0558.avif",
+      "SZV_0560.avif",
+      "SZV_0563.avif",
+      "SZV_0566.avif",
+      "SZV_0568.avif",
+      "SZV_0573.avif",
+      "SZV_0574.avif",
+      "SZV_0577.avif",
+      "SZV_0578.avif",
+      "SZV_0615.avif",
+      "SZV_0619.avif",
+      "SZV_0621.avif",
+      "SZV_0627.avif"
     ])
   },
   {
@@ -115,14 +115,14 @@ const CATEGORIES = [
       hu: "Események fotózása - a nagy pillanatokkal és azokkal az apró részletekkel, amelyek miatt emlékezetesek.",
       en: "Photography of events - the big moments and the small details that make them worth remembering."
     },
-    thumbnail: "/categories/events/SZV_0052.webp",
+    thumbnail: "/categories/events/SZV_0052.avif",
     items: categoryImages("events", [
-      "SZV_0034.webp",
-      "SZV_0040.webp",
-      "SZV_0046.webp",
-      "SZV_0052.webp",
-      "SZV_0055.webp",
-      "SZV_0060.webp"
+      "SZV_0034.avif",
+      "SZV_0040.avif",
+      "SZV_0046.avif",
+      "SZV_0052.avif",
+      "SZV_0055.avif",
+      "SZV_0060.avif"
     ])
   }
 ];
@@ -483,11 +483,7 @@ export default function App() {
           <nav className="menu" aria-label={lang === "hu" ? "Főmenü" : "Main"}>
             <a href="#work">{t.navWork}</a>
             <a href="#pricing">{t.navPricing}</a>
-            <a href="#about" onClick={event => {
-              event.preventDefault();
-              window.history.pushState(null, "", "#about");
-              document.querySelector(".about-photo")?.scrollIntoView({ behavior: "auto", block: "center" });
-            }}>{t.navAbout}</a>
+            <a href="#about">{t.navAbout}</a>
             <a className="btn small" href="#contact">{t.navBook}</a>
             <div className="lang" role="group" aria-label={t.lang}>
               {["hu", "en"].map(value => (
