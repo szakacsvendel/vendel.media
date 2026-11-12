@@ -13,7 +13,7 @@ const SITE = {
     en: "Szakács Vendel is a Budapest-based photographer and videographer specializing in portraits, family and team photography, vehicles and events."
   },
   location: { hu: "Budapest, Magyarország", en: "Based in Budapest, Hungary" },
-  heroImage: "/images/vendel.jpg",
+  heroImage: "/images/vendel.webp",
   email: "vendelsz08@gmail.com",
   phone: "+36 20 512 0212",
   formAction: "",
@@ -22,7 +22,7 @@ const SITE = {
     { label: "TikTok", url: "https://tiktok.com/@yourhandle" }
   ],
   about: {
-    photo: "/images/aboutme.jpg",
+    photo: "/images/aboutme.webp",
     title: { hu: "Rólam", en: "About me" },
     paragraphs: [
       {
@@ -59,23 +59,23 @@ const CATEGORIES = [
       hu: "Kötetlen portré képeim, egyedi stílusokban.",
       en: "My candid portraits, each with a distinct style."
     },
-    thumbnail: "/categories/portraits/SZV_0434.jpg",
+    thumbnail: "/categories/portraits/SZV_0434.webp",
     items: categoryImages("portraits", [
-      "SZV_0433.jpg",
-      "SZV_0434.jpg",
-      "SZV_0443.jpg",
-      "SZV_0464.jpg",
-      "SZV_0476.jpg",
-      "SZV_0483.jpg",
-      "SZV_0484.jpg",
-      "SZV_2047.jpg",
-      "SZV_2052.jpg",
-      "SZV_2054.jpg",
-      "SZV_2056.jpg",
-      "SZV_2073.jpg",
-      "SZV_2086.jpg",
-      "SZV_2092.jpg",
-      "SZV_2093.jpg"
+      "SZV_0433.webp",
+      "SZV_0434.webp",
+      "SZV_0443.webp",
+      "SZV_0464.webp",
+      "SZV_0476.webp",
+      "SZV_0483.webp",
+      "SZV_0484.webp",
+      "SZV_2047.webp",
+      "SZV_2052.webp",
+      "SZV_2054.webp",
+      "SZV_2056.webp",
+      "SZV_2073.webp",
+      "SZV_2086.webp",
+      "SZV_2092.webp",
+      "SZV_2093.webp"
     ])
   },
   {
@@ -85,27 +85,27 @@ const CATEGORIES = [
       hu: "Forma, részletek, hangulat - autókról és motorokról, akár eladáshoz, akár csak felvágni.",
       en: "Shape, detail and character - cars and bikes, whether for a sale or simply because it is cool."
     },
-    thumbnail: "/categories/vehicles/SZV_0578.jpg",
+    thumbnail: "/categories/vehicles/SZV_0578.webp",
     items: categoryImages("vehicles", [
-      "SZV_0387-Enhanced-NR.jpg",
-      "SZV_0392-Enhanced-NR.jpg",
-      "SZV_0395-Enhanced-NR.jpg",
-      "SZV_0399-Enhanced-NR.jpg",
-      "SZV_0551.jpg",
-      "SZV_0553.jpg",
-      "SZV_0558.jpg",
-      "SZV_0560.jpg",
-      "SZV_0563.jpg",
-      "SZV_0566.jpg",
-      "SZV_0568.jpg",
-      "SZV_0573.jpg",
-      "SZV_0574.jpg",
-      "SZV_0577.jpg",
-      "SZV_0578.jpg",
-      "SZV_0615.jpg",
-      "SZV_0619.jpg",
-      "SZV_0621.jpg",
-      "SZV_0627.jpg"
+      "SZV_0387-Enhanced-NR.webp",
+      "SZV_0392-Enhanced-NR.webp",
+      "SZV_0395-Enhanced-NR.webp",
+      "SZV_0399-Enhanced-NR.webp",
+      "SZV_0551.webp",
+      "SZV_0553.webp",
+      "SZV_0558.webp",
+      "SZV_0560.webp",
+      "SZV_0563.webp",
+      "SZV_0566.webp",
+      "SZV_0568.webp",
+      "SZV_0573.webp",
+      "SZV_0574.webp",
+      "SZV_0577.webp",
+      "SZV_0578.webp",
+      "SZV_0615.webp",
+      "SZV_0619.webp",
+      "SZV_0621.webp",
+      "SZV_0627.webp"
     ])
   },
   {
@@ -115,14 +115,14 @@ const CATEGORIES = [
       hu: "Események fotózása - a nagy pillanatokkal és azokkal az apró részletekkel, amelyek miatt emlékezetesek.",
       en: "Photography of events - the big moments and the small details that make them worth remembering."
     },
-    thumbnail: "/categories/events/SZV_0052.jpg",
+    thumbnail: "/categories/events/SZV_0052.webp",
     items: categoryImages("events", [
-      "SZV_0034.jpg",
-      "SZV_0040.jpg",
-      "SZV_0046.jpg",
-      "SZV_0052.jpg",
-      "SZV_0055.jpg",
-      "SZV_0060.jpg"
+      "SZV_0034.webp",
+      "SZV_0040.webp",
+      "SZV_0046.webp",
+      "SZV_0052.webp",
+      "SZV_0055.webp",
+      "SZV_0060.webp"
     ])
   }
 ];
