@@ -19,7 +19,7 @@ const SITE = {
   formAction: "",
   socials: [
     { label: "Instagram", url: "https://instagram.com/vendel.media/" },
-    { label: "TikTok", url: "https://tiktok.com/@yourhandle" }
+    { label: "TikTok", url: "https://www.tiktok.com/@vendel.media" }
   ],
   about: {
     photo: "/images/aboutme.avif",
