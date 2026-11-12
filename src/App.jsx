@@ -327,13 +327,8 @@ export default function App() {
       return "hu";
     }
   });
-  const [theme, setTheme] = useState(() => {
-    try {
-      return localStorage.getItem("theme") === "light" ? "light" : "dark";
-    } catch {
-      return "dark";
-    }
-  });
+  const [theme, setTheme] = useState("dark");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [workCat, setWorkCat] = useState(null);
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [zoomScale, setZoomScale] = useState(1);
@@ -372,11 +367,6 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    try {
-      localStorage.setItem("theme", theme);
-    } catch {
-      // The selected theme remains active until the page is reloaded.
-    }
   }, [theme]);
 
   useEffect(() => {
@@ -476,15 +466,29 @@ export default function App() {
       <a className="skip" href="#work">{t.skip}</a>
       <header className="bar">
         <div className="wrap">
-          <a className="logo" href="#top" aria-label={SITE.name}>
+          <a className="logo" href="#top" aria-label={SITE.name} onClick={() => setMobileMenuOpen(false)}>
             <span className="logo-mark" aria-hidden="true" />
             <span className="logo-wordmark">vendel.media</span>
           </a>
-          <nav className="menu" aria-label={lang === "hu" ? "Főmenü" : "Main"}>
-            <a href="#work">{t.navWork}</a>
-            <a href="#pricing">{t.navPricing}</a>
-            <a href="#about">{t.navAbout}</a>
-            <a className="btn small" href="#contact">{t.navBook}</a>
+          <button
+            className="menu-toggle"
+            type="button"
+            aria-label={lang === "hu"
+              ? (mobileMenuOpen ? "Menü bezárása" : "Menü megnyitása")
+              : (mobileMenuOpen ? "Close menu" : "Open menu")}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="site-menu"
+            onClick={() => setMobileMenuOpen(open => !open)}
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d={mobileMenuOpen ? "M6 6l12 12M18 6 6 18" : "M4 7h16M4 12h16M4 17h16"} />
+            </svg>
+          </button>
+          <nav id="site-menu" className={`menu${mobileMenuOpen ? " is-open" : ""}`} aria-label={lang === "hu" ? "Főmenü" : "Main"}>
+            <a href="#work" onClick={() => setMobileMenuOpen(false)}>{t.navWork}</a>
+            <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>{t.navPricing}</a>
+            <a href="#about" onClick={() => setMobileMenuOpen(false)}>{t.navAbout}</a>
+            <a className="btn small" href="#contact" onClick={() => setMobileMenuOpen(false)}>{t.navBook}</a>
             <div className="lang" role="group" aria-label={t.lang}>
               {["hu", "en"].map(value => (
                 <button key={value} type="button" aria-pressed={lang === value} onClick={() => setLang(value)}>
