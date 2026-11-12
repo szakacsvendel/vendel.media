@@ -246,9 +246,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem}
   .category-panel-description{padding-right:.85rem;padding-left:.85rem}
   .category-panel-meta{padding-right:.85rem;padding-left:.85rem}
   .lb{padding-top:max(4rem,calc(env(safe-area-inset-top,0px) + 3.25rem));padding-bottom:max(5rem,calc(env(safe-area-inset-bottom,0px) + 4rem))}
-  .stage{max-height:calc(100dvh - 12rem)}
-  .stage img,.stage video{max-height:calc(100dvh - 12rem)}
-  .lb-image-frame{max-height:calc(100dvh - 12rem)}
+  .stage{max-height:calc(100vh - 16rem);max-height:calc(100dvh - 16rem)}
+  .stage img,.stage video{max-height:calc(100vh - 16rem);max-height:calc(100dvh - 16rem);object-fit:contain}
+  .lb-image-frame{max-height:calc(100vh - 16rem);max-height:calc(100dvh - 16rem)}
   .lb-cap{max-width:100%;font-size:.9rem}
 }
 @media (max-width:360px){
