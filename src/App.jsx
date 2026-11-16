@@ -220,7 +220,7 @@ const UI = {
     seeWork: "Galéria megtekintése", viewPrices: "Árak megtekintése", work: "Galéria", pictures: "Kép", categoryPanels: "Kategóriák megtekintése",
     backToCategories: "← Vissza a kategóriákhoz", openCategory: name => `${name} kategória megnyitása`, viewCategory: "Galéria megnyitása",
     galleryPreviewNote: "Ezek előnézeti képek; a weboldal gyorsabb betöltése érdekében kisebb felbontásúak.",
-    showPlanDetails: "Részletek", hidePlanDetails: "Részletek elrejtése",
+    showPlanDetails: "Kattints ide a részletekért", hidePlanDetails: "Részletek elrejtése",
     pricing: "Árak", showPrices: "Árak megjelenítése", aboutPhoto: "A fotós portréja", contactTitle: "Foglalás",
     contactLead: "Portré, autó, motor vagy egy közelgő esemény? Írd meg, hol és mikor fotózzunk, és milyen képeket képzeltél el. Egy munkanapon belül válaszolok.",
     yourName: "Neved", yourEmail: "E-mail címed", whatNeed: "Mire van szükséged?", preferredDate: "Preferált dátum",
@@ -244,7 +244,7 @@ const UI = {
     seeWork: "View the gallery", viewPrices: "View prices", work: "Gallery", pictures: "Pictures", categoryPanels: "Browse categories",
     backToCategories: "← Back to categories", openCategory: name => `Open ${name} category`, viewCategory: "View gallery",
     galleryPreviewNote: "These are preview images; their resolution has been reduced to help the website load faster.",
-    showPlanDetails: "View details", hidePlanDetails: "Hide details",
+    showPlanDetails: "Click here for details", hidePlanDetails: "Hide details",
     pricing: "Pricing", showPrices: "Show prices for", aboutPhoto: "Portrait of the photographer", contactTitle: "Book a shoot",
     contactLead: "A portrait, a car, a bike or an upcoming event? Tell me where and when, and what kind of images you have in mind. I'll reply within one working day.",
     yourName: "Your name", yourEmail: "Your email", whatNeed: "What do you need?", preferredDate: "Preferred date",
@@ -267,6 +267,8 @@ const UI = {
 
 const pick = (value, lang) =>
   value && typeof value === "object" ? value[lang] || value.hu || value.en || "" : value || "";
+
+const sectionHref = id => `#${id}`;
 
 function placeholder(label, ratio = "4/5") {
   const [width, height] = ratio.split("/").map(Number);
@@ -436,6 +438,15 @@ export default function App() {
     window.requestAnimationFrame(() => document.getElementById("work")?.scrollIntoView());
   };
 
+  const navigateToSection = (event, id) => {
+    setMobileMenuOpen(false);
+    if (!category) return;
+    event.preventDefault();
+    setWorkCat(null);
+    window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${id}`);
+    window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 0);
+  };
+
   const requestPackage = (pkg, cat) => {
     setSelectedType(pkg.categoryId);
     const categoryName = cat ? pick(cat.name, lang) : pick(pkg.name, lang);
@@ -479,10 +490,10 @@ export default function App() {
 
   return (
     <>
-      {!category && <a className="skip" href="#work">{t.skip}</a>}
+      {!category && <a className="skip" href={sectionHref("work")}>{t.skip}</a>}
       <header className={`bar${category ? " gallery-bar" : ""}`}>
         <div className="wrap">
-          <a className="logo" href="#top" aria-label={SITE.name} onClick={() => setMobileMenuOpen(false)}>
+          <a className="logo" href={sectionHref("top")} aria-label={SITE.name} onClick={event => navigateToSection(event, "top")}>
             <span className="logo-mark" aria-hidden="true" />
             <span className="logo-wordmark">vendel.media</span>
           </a>
@@ -501,10 +512,10 @@ export default function App() {
             </svg>
           </button>
           <nav id="site-menu" className={`menu${mobileMenuOpen ? " is-open" : ""}`} aria-label={lang === "hu" ? "Főmenü" : "Main"}>
-            <a href="#work" onClick={() => setMobileMenuOpen(false)}>{t.navWork}</a>
-            <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>{t.navPricing}</a>
-            <a href="#about" onClick={() => setMobileMenuOpen(false)}>{t.navAbout}</a>
-            <a className="btn small" href="#contact" onClick={() => setMobileMenuOpen(false)}>{t.navBook}</a>
+            <a href={sectionHref("work")} onClick={event => navigateToSection(event, "work")}>{t.navWork}</a>
+            <a href={sectionHref("pricing")} onClick={event => navigateToSection(event, "pricing")}>{t.navPricing}</a>
+            <a href={sectionHref("about")} onClick={event => navigateToSection(event, "about")}>{t.navAbout}</a>
+            <a className="btn small" href={sectionHref("contact")} onClick={event => navigateToSection(event, "contact")}>{t.navBook}</a>
             <div className="lang" role="group" aria-label={t.lang}>
               {["hu", "en"].map(value => (
                 <button key={value} type="button" aria-pressed={lang === value} onClick={() => setLang(value)}>
@@ -547,8 +558,8 @@ export default function App() {
               <h1>{SITE.name}</h1>
               <p className="tagline prose">{pick(SITE.tagline, lang)}</p>
               <div className="cta">
-                <a className="btn" href="#work">{t.seeWork}</a>
-                <a className="btn ghost" href="#pricing">{t.viewPrices}</a>
+                <a className="btn" href={sectionHref("work")}>{t.seeWork}</a>
+                <a className="btn ghost" href={sectionHref("pricing")}>{t.viewPrices}</a>
               </div>
             </div>
             <figure className="hero-frame">
@@ -627,7 +638,14 @@ export default function App() {
             {PRICING_OPTIONS.map(option => {
               const optionCategory = CATEGORIES.find(cat => cat.id === option.categoryId);
               return (
-                <article key={option.id} className={`plan${expandedPlan === option.id ? " is-open" : ""}`}>
+                <article
+                  key={option.id}
+                  className={`plan${expandedPlan === option.id ? " is-open" : ""}`}
+                  onClick={event => {
+                    if (event.target.closest("button")) return;
+                    setExpandedPlan(current => current === option.id ? null : option.id);
+                  }}
+                >
                   <h3>{pick(option.name, lang)}</h3>
                   <p className="price"><b>{option.price}</b></p>
                   <button
@@ -637,10 +655,31 @@ export default function App() {
                     aria-controls={`plan-details-${option.id}`}
                     onClick={() => setExpandedPlan(current => current === option.id ? null : option.id)}
                   >
-                    {expandedPlan === option.id ? t.hidePlanDetails : t.showPlanDetails}
-                    <span aria-hidden="true">{expandedPlan === option.id ? " −" : " +"}</span>
+                    {t.showPlanDetails}<span aria-hidden="true"> ↗</span>
                   </button>
-                  <div className="plan-extra" id={`plan-details-${option.id}`}>
+                  {expandedPlan === option.id && (
+                    <button
+                      type="button"
+                      className="plan-backdrop"
+                      aria-label={t.hidePlanDetails}
+                      onClick={() => setExpandedPlan(null)}
+                    />
+                  )}
+                  <div
+                    className="plan-extra"
+                    id={`plan-details-${option.id}`}
+                    aria-hidden={expandedPlan !== option.id}
+                    onClick={event => event.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      className="plan-extra-close"
+                      aria-label={t.hidePlanDetails}
+                      onClick={() => setExpandedPlan(null)}
+                    >
+                      ×
+                    </button>
+                    <h4>{pick(option.name, lang)}</h4>
                     <p className="prose">{pick(option.description, lang)}</p>
                     <ul className="plan-details">
                       {pick(option.details, lang).map(detail => <li key={detail}>{detail}</li>)}
