@@ -458,12 +458,22 @@ export default function App() {
   };
 
   const navigateToSection = (event, id) => {
-    setMobileMenuOpen(false);
-    if (!category) return;
     event.preventDefault();
-    setWorkCat(null);
+    setMobileMenuOpen(false);
+    setExpandedPlan(null);
+    setLightboxIndex(null);
+    if (category) setWorkCat(null);
     window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${id}`);
-    window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 0);
+    window.requestAnimationFrame(() => {
+      const anchorTargets = {
+        work: "#work .category-panel",
+        pricing: "#pricing .section-title",
+        about: "#about .about-photo",
+        contact: "#contact .section-title"
+      };
+      const target = document.querySelector(anchorTargets[id]) || document.getElementById(id);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   };
 
   const requestPackage = (pkg, cat) => {
@@ -577,8 +587,8 @@ export default function App() {
               <h1>{SITE.name}</h1>
               <p className="tagline prose">{pick(SITE.tagline, lang)}</p>
               <div className="cta">
-                <a className="btn" href={sectionHref("work")}>{t.seeWork}</a>
-                <a className="btn ghost" href={sectionHref("pricing")}>{t.viewPrices}</a>
+                <a className="btn" href={sectionHref("work")} onClick={event => navigateToSection(event, "work")}>{t.seeWork}</a>
+                <a className="btn ghost" href={sectionHref("pricing")} onClick={event => navigateToSection(event, "pricing")}>{t.viewPrices}</a>
               </div>
             </div>
             <figure className="hero-frame">
@@ -591,7 +601,6 @@ export default function App() {
         </div>}
 
         <section className={category ? "gallery-screen" : "wrap section"} id="work">
-          {!category && <div className="sec-head"><h2 className="section-title">{t.work}</h2></div>}
           {!category ? (
             <div className="category-panels" aria-label={t.categoryPanels}>
               {CATEGORIES.map(cat => {
@@ -805,7 +814,7 @@ export default function App() {
         </>}
       </main>
 
-      {!category && <footer>
+      {!category && <footer className="site-footer">
         <div className="wrap">
           <span>© {new Date().getFullYear()} {SITE.name}</span>
           <span>{pick(SITE.location, lang)}</span>
