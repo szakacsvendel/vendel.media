@@ -59,7 +59,7 @@ const CATEGORIES = [
       hu: "Kötetlen portré képeim, egyedi stílusokban.",
       en: "My candid portraits, each with a distinct style."
     },
-    thumbnail: "/categories/portraits/SZV_0434-3.avif",
+    thumbnail: "/categories/portraits/SZV_0434-3.jpg",
     items: categoryImages("portraits", [
       "SZV_0433.avif",
       "SZV_0434.avif",
