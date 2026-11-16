@@ -132,7 +132,7 @@ const PRICING_OPTIONS = [
     id: "portrait-photography",
     categoryId: "portrait",
     name: { hu: "Portréfotózás", en: "Portrait photography" },
-    price: "8 000 HUF",
+    price: "10 000 HUF",
     description: {
       hu: "Stílusos személyreszabott portréfotózás.",
       en: "Stylish, personalized portrait photography."
@@ -146,7 +146,7 @@ const PRICING_OPTIONS = [
     id: "family-photography",
     categoryId: "family",
     name: { hu: "Családi fotózás", en: "Family photography" },
-    price: "5 000 HUF",
+    price: "15 000 HUF",
     description: {
       hu: "Közös családi pillanatok természetes, személyre szabott megörökítése.",
       en: "Natural, personalized photography to capture special family moments."
@@ -160,7 +160,7 @@ const PRICING_OPTIONS = [
     id: "team-photography",
     categoryId: "team",
     name: { hu: "Csapat/Osztály fotózás", en: "Team/Class photography" },
-    price: "10 000 HUF",
+    price: "20 000 HUF",
     description: {
       hu: "Egységes, professzionális portrék és közös képek egy csapatról vagy osztályról.",
       en: "Consistent, professional portraits and group photos for a team or a class."
@@ -174,7 +174,7 @@ const PRICING_OPTIONS = [
     id: "vehicle-photography",
     categoryId: "car-motorbike",
     name: { hu: "Járműfotózás", en: "Vehicle photography" },
-    price: "8 000 HUF",
+    price: "10 000 HUF",
     description: {
       hu: "Részletgazdag fotók az autódról vagy motorodról.",
       en: "Detailed photos of your car or motorcycle."
@@ -188,7 +188,7 @@ const PRICING_OPTIONS = [
     id: "vehicle-videography",
     categoryId: "car-motorbike",
     name: { hu: "Járművideózás", en: "Vehicle videography" },
-    price: "10 000 HUF",
+    price: "20 000 HUF",
     description: {
       hu: "Részletgazdag videó az autódról vagy motorodról.",
       en: "Detailed video of your car or motorcycle."
@@ -202,7 +202,7 @@ const PRICING_OPTIONS = [
     id: "event-photography",
     categoryId: "event",
     name: { hu: "Eseményfotózás", en: "Event photography" },
-    price: "15 000 HUF",
+    price: "10 000 HUF/óra",
     description: {
       hu: "Az esemény fontos pillanatainak és hangulatának megörökítése.",
       en: "Capturing the key moments and atmosphere of your event."
