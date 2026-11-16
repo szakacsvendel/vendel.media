@@ -26,7 +26,7 @@ const SITE = {
     title: { hu: "Rólam", en: "About me" },
     paragraphs: [
       {
-        hu: "Négy éve foglalkozom fotózással és videózással. Szeretem, ha egy kép nemcsak megmutatja, mi történt, hanem visszaad valamit abból is, milyen volt ott lenni.",
+        hu: "Négy éve foglalkozom fotózással és videózással. Szeretem, ha egy kép nemcsak megmutatja, mi történt, hanem visszaad valamit abból is, hogy milyen volt ott lenni.",
         en: "I've been working in photography and video for four years. I want an image to do more than show what happened; it should bring back something of what it felt like to be there."
       },
       {
