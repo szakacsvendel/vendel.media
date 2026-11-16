@@ -59,7 +59,7 @@ const CATEGORIES = [
       hu: "Kötetlen portré képeim, egyedi stílusokban.",
       en: "My candid portraits, each with a distinct style."
     },
-    thumbnail: "/categories/portraits/SZV_0434.avif",
+    thumbnail: "/categories/portraits/SZV_0434-3.avif",
     items: categoryImages("portraits", [
       "SZV_0433.avif",
       "SZV_0434.avif",
@@ -85,7 +85,7 @@ const CATEGORIES = [
       hu: "Forma, részletek, hangulat - autókról és motorokról, akár eladáshoz, akár csak felvágni.",
       en: "Shape, detail and character - cars and bikes, whether for a sale or simply because it is cool."
     },
-    thumbnail: "/categories/vehicles/SZV_0578.avif",
+    thumbnail: "/categories/vehicles/SZV_0566.avif",
     items: categoryImages("vehicles", [
       "SZV_0387-Enhanced-NR.avif",
       "SZV_0392-Enhanced-NR.avif",
@@ -218,7 +218,9 @@ const UI = {
   hu: {
     skip: "Ugrás a galériához", navWork: "Galéria", navPricing: "Árak", navAbout: "Rólam", navBook: "Foglalás",
     seeWork: "Galéria megtekintése", viewPrices: "Árak megtekintése", work: "Galéria", pictures: "Kép", categoryPanels: "Kategóriák megtekintése",
-    backToCategories: "← Vissza a kategóriákhoz", openCategory: name => `${name} kategória megnyitása`,
+    backToCategories: "← Vissza a kategóriákhoz", openCategory: name => `${name} kategória megnyitása`, viewCategory: "Galéria megnyitása",
+    galleryPreviewNote: "Ezek előnézeti képek; a weboldal gyorsabb betöltése érdekében kisebb felbontásúak.",
+    showPlanDetails: "Részletek", hidePlanDetails: "Részletek elrejtése",
     pricing: "Árak", showPrices: "Árak megjelenítése", aboutPhoto: "A fotós portréja", contactTitle: "Foglalás",
     contactLead: "Portré, autó, motor vagy egy közelgő esemény? Írd meg, hol és mikor fotózzunk, és milyen képeket képzeltél el. Egy munkanapon belül válaszolok.",
     yourName: "Neved", yourEmail: "E-mail címed", whatNeed: "Mire van szükséged?", preferredDate: "Preferált dátum",
@@ -240,7 +242,9 @@ const UI = {
   en: {
     skip: "Skip to gallery", navWork: "Gallery", navPricing: "Pricing", navAbout: "About", navBook: "Book a shoot",
     seeWork: "View the gallery", viewPrices: "View prices", work: "Gallery", pictures: "Pictures", categoryPanels: "Browse categories",
-    backToCategories: "← Back to categories", openCategory: name => `Open ${name} category`,
+    backToCategories: "← Back to categories", openCategory: name => `Open ${name} category`, viewCategory: "View gallery",
+    galleryPreviewNote: "These are preview images; their resolution has been reduced to help the website load faster.",
+    showPlanDetails: "View details", hidePlanDetails: "Hide details",
     pricing: "Pricing", showPrices: "Show prices for", aboutPhoto: "Portrait of the photographer", contactTitle: "Book a shoot",
     contactLead: "A portrait, a car, a bike or an upcoming event? Tell me where and when, and what kind of images you have in mind. I'll reply within one working day.",
     yourName: "Your name", yourEmail: "Your email", whatNeed: "What do you need?", preferredDate: "Preferred date",
@@ -302,10 +306,9 @@ function updateGalleryTileSpan(image) {
   if (!image.naturalWidth || !image.naturalHeight) return;
   const tile = image.closest(".tile");
   if (!tile) return;
-  const rowHeight = 1;
   const gap = 12;
   const imageHeight = tile.clientWidth * image.naturalHeight / image.naturalWidth;
-  tile.style.gridRowEnd = `span ${Math.ceil((imageHeight + gap) / rowHeight)}`;
+  tile.style.gridRowEnd = `span ${Math.ceil((imageHeight + gap) / (1 + gap))}`;
 }
 
 function videoEmbed(item, lang) {
@@ -335,6 +338,7 @@ export default function App() {
     }
   });
   const [workCat, setWorkCat] = useState(null);
+  const [expandedPlan, setExpandedPlan] = useState(null);
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [zoomScale, setZoomScale] = useState(1);
   const [imageOffset, setImageOffset] = useState({ x: 0, y: 0 });
@@ -430,6 +434,18 @@ export default function App() {
     setLightboxIndex(index);
   };
 
+  const openCategory = id => {
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    window.scrollTo(0, 0);
+    setWorkCat(id);
+  };
+
+  const closeCategory = () => {
+    setWorkCat(null);
+    window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#work`);
+    window.requestAnimationFrame(() => document.getElementById("work")?.scrollIntoView());
+  };
+
   const requestPackage = (pkg, cat) => {
     setSelectedType(pkg.categoryId);
     const categoryName = cat ? pick(cat.name, lang) : pick(pkg.name, lang);
@@ -473,8 +489,8 @@ export default function App() {
 
   return (
     <>
-      <a className="skip" href="#work">{t.skip}</a>
-      <header className="bar">
+      {!category && <a className="skip" href="#work">{t.skip}</a>}
+      <header className={`bar${category ? " gallery-bar" : ""}`}>
         <div className="wrap">
           <a className="logo" href="#top" aria-label={SITE.name}>
             <span className="logo-mark" aria-hidden="true" />
@@ -519,8 +535,8 @@ export default function App() {
         </div>
       </header>
 
-      <main id="top">
-        <div className="wrap">
+      <main id="top" className={category ? "gallery-view" : undefined}>
+        {!category && <div className="wrap">
           <section className="hero">
             <div className="hero-text">
               <p className="role">{pick(SITE.role, lang)}</p>
@@ -536,26 +552,29 @@ export default function App() {
                 <div className="marks" aria-hidden="true"><i className="tl" /><i className="tr" /><i className="bl" /><i className="br" /></div>
                  <SafeImage src={SITE.heroImage} alt="" label={t.heroPh} ratio="2/3" />
               </div>
-              <figcaption>{pick(SITE.location, lang)}</figcaption>
             </figure>
           </section>
-        </div>
+        </div>}
 
-        <section className="wrap section" id="work">
-          <div className="sec-head"><h2>{t.work}</h2></div>
+        <section className={category ? "gallery-screen" : "wrap section"} id="work">
+          {!category && <div className="sec-head"><h2 className="section-title">{t.work}</h2></div>}
           {!category ? (
             <div className="category-panels" aria-label={t.categoryPanels}>
               {CATEGORIES.map(cat => {
                 const item = cat.items.find(image => image.src === cat.thumbnail) || cat.items[0];
+                const thumbnail = cat.thumbnail || item.src;
                 const ratio = item.ratio || "4/5";
                 return (
-                  <button key={cat.id} type="button" className="category-panel" aria-label={t.openCategory(pick(cat.name, lang))} onClick={() => setWorkCat(cat.id)}>
+                  <button key={cat.id} type="button" className={`category-panel${cat.id === "car-motorbike" ? " category-panel-vehicles" : ""}`} aria-label={t.openCategory(pick(cat.name, lang))} onClick={() => openCategory(cat.id)}>
                     <span className="category-cover">
-                      <SafeImage src={item.src} alt="" label={pick(cat.name, lang)} ratio={ratio} loading="lazy" onLoad={matchImageRatio} />
+                      <SafeImage src={thumbnail} alt="" label={pick(cat.name, lang)} ratio={ratio} loading="lazy" onLoad={matchImageRatio} />
                     </span>
-                    <span className="category-panel-title">{pick(cat.name, lang)}</span>
-                    <span className="category-panel-description">{pick(cat.blurb, lang)}</span>
-                    <span className="category-panel-meta">{String(cat.items.length).padStart(2, "0")} {t.pictures.toLowerCase()}</span>
+                    <span className="category-panel-content">
+                      <span className="category-panel-title">{pick(cat.name, lang)}</span>
+                      <span className="category-panel-description">{pick(cat.blurb, lang)}</span>
+                      <span className="category-panel-meta">{String(cat.items.length).padStart(2, "0")} {t.pictures.toLowerCase()}</span>
+                      <span className="category-panel-cta">{t.viewCategory}<span aria-hidden="true"> ↗</span></span>
+                    </span>
                   </button>
                 );
               })}
@@ -563,9 +582,10 @@ export default function App() {
           ) : (
             <section className="category-detail">
               <div className="category-heading">
-                <button className="gallery-back" type="button" onClick={() => setWorkCat(null)}>{t.backToCategories}</button>
-                <h3>{pick(category.name, lang)}</h3>
+                <button className="category-panel-cta gallery-back" type="button" onClick={closeCategory}>{t.backToCategories}</button>
+                <h3 className="section-title">{pick(category.name, lang)}</h3>
                 <p className="prose">{pick(category.blurb, lang)}</p>
+                <p className="gallery-preview-note">{t.galleryPreviewNote}</p>
               </div>
               {gallery.length ? (
                 <div className="grid">
@@ -594,28 +614,41 @@ export default function App() {
           )}
         </section>
 
+        {!category && <>
         <section className="wrap section" id="pricing">
           <div className="sec-head">
-            <h2>{t.pricing}</h2>
+            <h2 className="section-title">{t.pricing}</h2>
           </div>
           <div className="plans">
             {PRICING_OPTIONS.map(option => {
               const optionCategory = CATEGORIES.find(cat => cat.id === option.categoryId);
               return (
-                <article key={option.id} className="plan">
+                <article key={option.id} className={`plan${expandedPlan === option.id ? " is-open" : ""}`}>
                   <h3>{pick(option.name, lang)}</h3>
                   <p className="price"><b>{option.price}</b></p>
-                  <p className="prose">{pick(option.description, lang)}</p>
-                  <ul className="plan-details">
-                    {pick(option.details, lang).map(detail => <li key={detail}>{detail}</li>)}
-                  </ul>
                   <button
                     type="button"
-                    className="btn ghost"
-                    onClick={() => requestPackage(option, optionCategory)}
+                    className="plan-toggle"
+                    aria-expanded={expandedPlan === option.id}
+                    aria-controls={`plan-details-${option.id}`}
+                    onClick={() => setExpandedPlan(current => current === option.id ? null : option.id)}
                   >
-                    {t.request}
+                    {expandedPlan === option.id ? t.hidePlanDetails : t.showPlanDetails}
+                    <span aria-hidden="true">{expandedPlan === option.id ? " −" : " +"}</span>
                   </button>
+                  <div className="plan-extra" id={`plan-details-${option.id}`}>
+                    <p className="prose">{pick(option.description, lang)}</p>
+                    <ul className="plan-details">
+                      {pick(option.details, lang).map(detail => <li key={detail}>{detail}</li>)}
+                    </ul>
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => requestPackage(option, optionCategory)}
+                    >
+                      {t.request}
+                    </button>
+                  </div>
                 </article>
               );
             })}
@@ -630,7 +663,7 @@ export default function App() {
               <SafeImage src={SITE.about.photo} alt={t.aboutPhoto} label={t.portraitPh} ratio="2/3" />
             </figure>
             <div>
-              <h2>{pick(SITE.about.title, lang)}</h2>
+              <h2 className="section-title">{pick(SITE.about.title, lang)}</h2>
               {SITE.about.paragraphs.map((paragraph, index) => <p className="prose" key={index}>{pick(paragraph, lang)}</p>)}
               <ul className="chips">{SITE.about.services.map((service, index) => <li key={index}>{pick(service, lang)}</li>)}</ul>
             </div>
@@ -640,7 +673,7 @@ export default function App() {
         <section className="wrap section" id="contact">
           <div className="contact">
             <div>
-              <h2>{t.contactTitle}</h2>
+              <h2 className="section-title">{t.contactTitle}</h2>
               <p className="prose">{t.contactLead}</p>
               <div className="direct">
                 <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
@@ -674,14 +707,15 @@ export default function App() {
             </form>
           </div>
         </section>
+        </>}
       </main>
 
-      <footer>
+      {!category && <footer>
         <div className="wrap">
           <span>© {new Date().getFullYear()} {SITE.name}</span>
           <span>{pick(SITE.location, lang)}</span>
         </div>
-      </footer>
+      </footer>}
 
       {lightboxItem && (
         <div className="lb" role="dialog" aria-modal="true" aria-label={t.viewer} onClick={event => { if (event.target === event.currentTarget) setLightboxIndex(null); }}>
