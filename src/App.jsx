@@ -5,8 +5,8 @@ const SITE = {
   name: "Szakács Vendel",
   role: { hu: "Fotós és Videós", en: "Photographer & Videographer" },
   tagline: {
-    hu: "Budapesten fotózom és forgatok — portrékat, autókat, motorokat és azokat a pillanatokat, amelyekhez jó később visszatérni.",
-    en: "I photograph and film in Budapest — portraits, cars, bikes and the moments you'll want to come back to."
+    hu: "Budapesten fotózom és forgatok - portrékat, autókat, motorokat és azokat a pillanatokat, amelyekhez jó később visszatérni.",
+    en: "I photograph and film in Budapest - portraits, cars, bikes and the moments you'll want to come back to."
   },
   seoDescription: {
     hu: "Szakács Vendel fotós és videós Budapesten. Portré-, családi, csapat-, autó- és eseményfotózás. Nézd meg a portfóliót, és kérj ajánlatot!",
