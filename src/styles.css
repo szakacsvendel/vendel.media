@@ -35,7 +35,7 @@ img{max-width:100%}
 a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:4px}
-.prose{font-family:var(--serif);font-size:1.15rem;line-height:1.7;color:var(--muted);max-width:60ch}
+.prose{font-family:"Newsreader",Georgia,"Times New Roman",serif;font-size:1.15rem;line-height:1.7;color:var(--muted);max-width:60ch}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
 .skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--ink);padding:.6rem 1rem;z-index:100}
 .skip:focus{left:0}
@@ -45,8 +45,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .gallery-bar{position:fixed;inset:0 0 auto}
 .gallery-bar + main{padding-top:5.5rem}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:5.5rem;gap:1rem}
+.menu-toggle{display:none}
 .logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;min-width:5rem;height:5.25rem;text-decoration:none}
-.logo-mark{display:block;width:3.6rem;height:3.6rem;background:var(--accent);-webkit-mask:url("/Vm_black.png") center/235% 235% no-repeat;mask:url("/Vm_black.png") center/235% 235% no-repeat}
+.logo-mark{display:block;width:3.6rem;height:3.6rem;background:var(--accent);-webkit-mask:url("../public/Vm_black.png") center/235% 235% no-repeat;mask:url("../public/Vm_black.png") center/235% 235% no-repeat}
 .logo-wordmark{color:var(--accent);font-size:.68rem;line-height:1;font-weight:700;letter-spacing:.04em}
 .menu{display:flex;align-items:center;gap:1.6rem}
 .menu a{text-decoration:none;font-weight:500;color:var(--muted);transition:color .15s}
@@ -63,7 +64,16 @@ button{font:inherit;color:inherit;cursor:pointer}
 .theme-toggle button:last-child{border-radius:0 3px 3px 0;margin-left:-1px}
 .lang button,.theme-toggle button{display:grid;place-items:center;width:2.35rem;height:2.35rem;padding:.38rem}
 .theme-toggle svg{display:block;width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-@media (max-width:700px){.menu a:not(.btn){display:none}}
+@media (max-width:700px){
+  .bar .wrap{position:relative}
+  .menu-toggle{display:grid;place-items:center;flex:none;width:2.75rem;height:2.75rem;padding:.65rem;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text)}
+  .menu-toggle:hover,.menu-toggle[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+  .menu-toggle svg{display:block;width:1.35rem;height:1.35rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .menu{display:none;position:absolute;top:calc(100% + .5rem);right:0;align-items:stretch;flex-direction:column;gap:.8rem;min-width:min(18rem,calc(100vw - 2 * var(--pad)));padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+  .menu.is-open{display:flex}
+  .menu a:not(.btn){display:block}
+  .menu .lang{align-self:flex-start}
+}
 
 /* ---------- buttons & tabs ---------- */
 .btn{display:inline-block;text-decoration:none;font-weight:700;font-size:.95rem;padding:.8rem 1.5rem;border-radius:999px;border:1px solid var(--accent);background:var(--accent);color:var(--ink);transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
@@ -108,7 +118,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* ---------- sections ---------- */
 .section{padding-top:clamp(4rem,9vw,7rem)}
 .sec-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.25rem;margin-bottom:2rem}
-h2,.section-title{margin:0;font-family:var(--serif);font-weight:500;font-size:clamp(2.3rem,5.2vw,4rem);line-height:1;letter-spacing:-.035em}
+h2,.section-title{margin:0;font-family:"Newsreader",Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(2.3rem,5.2vw,4rem);line-height:1;letter-spacing:-.035em}
 .section-title{display:grid;justify-items:start;gap:.65rem}
 .section-title::after{width:2.5rem;height:2px;background:var(--accent);content:""}
 
@@ -127,6 +137,7 @@ h2,.section-title{margin:0;font-family:var(--serif);font-weight:500;font-size:cl
 .category-panel-vehicles{justify-content:flex-end}
 .category-panel-vehicles .category-panel-content{justify-items:end;text-align:right}
 .category-panel-title{display:block;font:500 clamp(2.5rem,7vw,5.5rem)/.95 var(--serif)}
+.category-panel-title::after{display:block;width:2.5rem;height:2px;margin-top:.65rem;background:var(--accent);content:""}
 .category-panel-description{display:block;max-width:42ch;color:rgba(255,255,255,.82);font-size:clamp(1rem,1.5vw,1.15rem);line-height:1.5}
 .category-panel-meta{display:block;color:rgba(255,255,255,.72);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
 .category-panel-cta{display:inline-block;margin-top:.4rem;padding:.7rem 1.2rem;border:1px solid rgba(255,255,255,.8);border-radius:999px;font-size:.9rem;font-weight:700;transition:background .2s,color .2s}
@@ -155,15 +166,15 @@ h2,.section-title{margin:0;font-family:var(--serif);font-weight:500;font-size:cl
 /* ---------- pricing ---------- */
 .price-intro{margin:1.5rem 0 2rem}
 .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
-.plan{position:relative;display:flex;flex-direction:column;gap:.65rem;min-height:0;padding:2rem 1.6rem;background:var(--surface);border:1px solid var(--line);border-radius:14px;transition:transform .2s,border-color .2s}
-.plan:hover{transform:translateY(-3px);border-color:var(--accent)}
+.plan{position:relative;z-index:0;display:flex;flex-direction:column;gap:.65rem;min-height:0;padding:2rem 1.6rem;background:var(--surface);border:1px solid var(--line);border-radius:14px;transition:transform .2s,border-color .2s}
+.plan:hover,.plan.is-open{z-index:3;transform:translateY(-3px);border-color:var(--accent);border-bottom-color:transparent;border-radius:14px 14px 0 0}
 .plan.featured{border-color:var(--accent);background:var(--raise)}
 .badge{position:absolute;top:-.8rem;left:1.5rem;background:var(--accent);color:var(--ink);font-size:.8rem;font-weight:700;padding:.2rem .75rem;border-radius:999px}
 .plan h3{margin:0;font-size:1.35rem;font-weight:700;letter-spacing:-.01em}
 .plan-toggle{align-self:flex-start;padding:0;border:0;background:none;color:var(--accent);font-size:.9rem;font-weight:700;text-align:left}
 .plan-toggle:hover{text-decoration:underline;text-underline-offset:3px}
-.plan-extra{display:flex;flex-direction:column;gap:1rem;max-height:0;overflow:hidden;opacity:0;visibility:hidden;transition:max-height .35s ease,opacity .2s ease,visibility 0s linear .35s}
-.plan:hover .plan-extra,.plan.is-open .plan-extra{max-height:1000px;opacity:1;visibility:visible;transition:max-height .4s ease,opacity .2s ease,visibility 0s}
+.plan-extra{position:absolute;top:calc(100% - 1px);left:-1px;right:-1px;display:flex;flex-direction:column;gap:1rem;max-height:0;padding:0 1.6rem;overflow:hidden;border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;background:var(--surface);box-shadow:0 18px 28px rgba(0,0,0,.2);opacity:0;visibility:hidden;transition:max-height .35s ease,opacity .2s ease,padding .35s ease,border-color .2s ease,visibility 0s linear .35s}
+.plan:hover .plan-extra,.plan.is-open .plan-extra{max-height:32rem;padding:0 1.6rem 1.6rem;border-color:var(--accent);opacity:1;visibility:visible;transition:max-height .4s ease,opacity .2s ease,padding .4s ease,border-color .2s ease,visibility 0s}
 .price{margin:0;display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
 .price b{font-size:3rem;line-height:1;font-weight:800;letter-spacing:-.03em}
 .plan .price b{font-size:clamp(1.45rem,2.6vw,2.25rem);white-space:nowrap}
