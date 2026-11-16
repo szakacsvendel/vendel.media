@@ -115,7 +115,7 @@ const CATEGORIES = [
       hu: "Események fotózása - a nagy pillanatokkal és azokkal az apró részletekkel, amelyek miatt emlékezetesek.",
       en: "Photography of events - the big moments and the small details that make them worth remembering."
     },
-    thumbnail: "/categories/events/SZV_0052.avif",
+    thumbnail: "/categories/events/SZV_0055.avif",
     items: categoryImages("events", [
       "SZV_0034.avif",
       "SZV_0040.avif",
@@ -220,7 +220,7 @@ const UI = {
     seeWork: "Galéria megtekintése", viewPrices: "Árak megtekintése", work: "Galéria", pictures: "Kép", categoryPanels: "Kategóriák megtekintése",
     backToCategories: "← Vissza a kategóriákhoz", openCategory: name => `${name} kategória megnyitása`, viewCategory: "Galéria megnyitása",
     galleryPreviewNote: "Ezek előnézeti képek; a weboldal gyorsabb betöltése érdekében kisebb felbontásúak.",
-    showPlanDetails: "Kattints ide a részletekért", hidePlanDetails: "Részletek elrejtése",
+    showPlanDetails: "Kattints ide a részletekért", hidePlanDetails: "Részletek elrejtése", fromBefore: "", fromAfter: "-tól",
     pricing: "Árak", showPrices: "Árak megjelenítése", aboutPhoto: "A fotós portréja", contactTitle: "Foglalás",
     contactLead: "Portré, autó, motor vagy egy közelgő esemény? Írd meg, hol és mikor fotózzunk, és milyen képeket képzeltél el. Egy munkanapon belül válaszolok.",
     yourName: "Neved", yourEmail: "E-mail címed", whatNeed: "Mire van szükséged?", preferredDate: "Preferált dátum",
@@ -244,7 +244,7 @@ const UI = {
     seeWork: "View the gallery", viewPrices: "View prices", work: "Gallery", pictures: "Pictures", categoryPanels: "Browse categories",
     backToCategories: "← Back to categories", openCategory: name => `Open ${name} category`, viewCategory: "View gallery",
     galleryPreviewNote: "These are preview images; their resolution has been reduced to help the website load faster.",
-    showPlanDetails: "Click here for details", hidePlanDetails: "Hide details",
+    showPlanDetails: "Click here for details", hidePlanDetails: "Hide details", fromBefore: "From", fromAfter: "",
     pricing: "Pricing", showPrices: "Show prices for", aboutPhoto: "Portrait of the photographer", contactTitle: "Book a shoot",
     contactLead: "A portrait, a car, a bike or an upcoming event? Tell me where and when, and what kind of images you have in mind. I'll reply within one working day.",
     yourName: "Your name", yourEmail: "Your email", whatNeed: "What do you need?", preferredDate: "Preferred date",
@@ -336,6 +336,7 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [workCat, setWorkCat] = useState(null);
   const [expandedPlan, setExpandedPlan] = useState(null);
+  const [planDirection, setPlanDirection] = useState(null);
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [zoomScale, setZoomScale] = useState(1);
   const [imageOffset, setImageOffset] = useState({ x: 0, y: 0 });
@@ -349,6 +350,24 @@ export default function App() {
   const panStart = useRef(null);
   const imageWasDragged = useRef(false);
   const messageField = useRef(null);
+  const activePlanIndex = PRICING_OPTIONS.findIndex(option => option.id === expandedPlan);
+  const activePlan = activePlanIndex >= 0 ? PRICING_OPTIONS[activePlanIndex] : null;
+  const activePlanCategory = activePlan && CATEGORIES.find(cat => cat.id === activePlan.categoryId);
+  const activePlanIsGroup = activePlan?.id === "team-photography";
+  const activePlanImage = activePlanIsGroup
+    ? { src: "/pricing examples/SZV_0076.avif", ratio: "3/2" }
+    : activePlan?.id === "family-photography"
+      ? { src: "/pricing examples/_MG_5666.avif", ratio: "2/3" }
+      : activePlan?.id === "vehicle-videography"
+        ? { src: "/pricing examples/SZV_0392-Enhanced-NR.avif", ratio: "2/3" }
+        : activePlan?.id === "vehicle-photography"
+      ? { src: "/pricing examples/SZV_0578.avif", ratio: "2/3" }
+      : (activePlanCategory || CATEGORIES.find(cat => cat.id === "portrait"))?.items[0];
+  const navigatePlan = direction => {
+    const nextIndex = (activePlanIndex + (direction === "next" ? 1 : -1) + PRICING_OPTIONS.length) % PRICING_OPTIONS.length;
+    setPlanDirection(direction);
+    setExpandedPlan(PRICING_OPTIONS[nextIndex].id);
+  };
   const previousFocus = useRef(null);
   const t = UI[lang];
   const category = CATEGORIES.find(item => item.id === workCat);
@@ -635,80 +654,113 @@ export default function App() {
             <h2 className="section-title">{t.pricing}</h2>
           </div>
           <div className="plans">
-            {PRICING_OPTIONS.map(option => {
-              const optionCategory = CATEGORIES.find(cat => cat.id === option.categoryId);
-              return (
+            {PRICING_OPTIONS.map(option => (
                 <article
                   key={option.id}
-                  className={`plan${expandedPlan === option.id ? " is-open" : ""}`}
+                  className="plan"
                   onClick={event => {
                     if (event.target.closest("button")) return;
+                    setPlanDirection(null);
                     setExpandedPlan(current => current === option.id ? null : option.id);
                   }}
                 >
                   <h3>{pick(option.name, lang)}</h3>
-                  <p className="price"><b>{option.price}</b></p>
+                  <p className="price">{t.fromBefore && <span className="price-from">{t.fromBefore}</span>}<b>{option.price}</b>{t.fromAfter && <span className="price-from">{t.fromAfter}</span>}</p>
                   <button
                     type="button"
                     className="plan-toggle"
                     aria-expanded={expandedPlan === option.id}
                     aria-controls={`plan-details-${option.id}`}
-                    onClick={() => setExpandedPlan(current => current === option.id ? null : option.id)}
+                    onClick={() => {
+                      setPlanDirection(null);
+                      setExpandedPlan(current => current === option.id ? null : option.id);
+                    }}
                   >
                     {t.showPlanDetails}<span aria-hidden="true"> ↗</span>
                   </button>
-                  {expandedPlan === option.id && (
-                    <button
-                      type="button"
-                      className="plan-backdrop"
-                      aria-label={t.hidePlanDetails}
-                      onClick={() => setExpandedPlan(null)}
-                    />
-                  )}
-                  <div
-                    className="plan-extra"
-                    id={`plan-details-${option.id}`}
-                    aria-hidden={expandedPlan !== option.id}
-                    onClick={event => event.stopPropagation()}
-                  >
-                    <button
-                      type="button"
-                      className="plan-extra-close"
-                      aria-label={t.hidePlanDetails}
-                      onClick={() => setExpandedPlan(null)}
-                    >
-                      ×
-                    </button>
-                    <h4>{pick(option.name, lang)}</h4>
-                    <p className="prose">{pick(option.description, lang)}</p>
-                    <ul className="plan-details">
-                      {pick(option.details, lang).map(detail => <li key={detail}>{detail}</li>)}
-                    </ul>
-                    <button
-                      type="button"
-                      className="btn ghost"
-                      onClick={() => requestPackage(option, optionCategory)}
-                    >
-                      {t.request}
-                    </button>
-                  </div>
                 </article>
-              );
-            })}
+            ))}
           </div>
+          {activePlan && (
+            <button
+              type="button"
+              className="plan-backdrop"
+              aria-label={t.hidePlanDetails}
+              onClick={() => setExpandedPlan(null)}
+            />
+          )}
+          <div
+            className={`plan-extra${activePlanIsGroup ? " is-group" : ""}${activePlan ? " is-open" : ""}`}
+            id={activePlan ? `plan-details-${activePlan.id}` : undefined}
+            role="dialog"
+            aria-modal={activePlan ? "true" : undefined}
+            aria-hidden={!activePlan}
+            onClick={event => event.stopPropagation()}
+          >
+            {activePlan && (
+              <>
+                <button
+                  type="button"
+                  className="plan-extra-close"
+                  aria-label={t.hidePlanDetails}
+                  onClick={() => setExpandedPlan(null)}
+                >
+                  ×
+                </button>
+                <div
+                  key={activePlan.id}
+                  className={`plan-extra-content${planDirection ? ` swipe-${planDirection}` : ""}`}
+                >
+                  <h4 className="section-title">{pick(activePlan.name, lang)}</h4>
+                  <div className={`plan-extra-body${activePlanIsGroup ? " is-horizontal-example" : ""}`}>
+                    <div className="plan-extra-copy">
+                      <p className="prose">{pick(activePlan.description, lang)}</p>
+                      <ul className="plan-details">
+                        {pick(activePlan.details, lang).map(detail => <li key={detail}>{detail}</li>)}
+                      </ul>
+                      <button
+                        type="button"
+                        className="btn ghost"
+                        onClick={() => requestPackage(activePlan, activePlanCategory)}
+                      >
+                        {t.request}
+                      </button>
+                    </div>
+                    {activePlanImage && (
+                      <SafeImage
+                        className="plan-example"
+                        src={activePlanImage.src}
+                        alt=""
+                        label={t.photoPh}
+                        ratio={activePlanImage.ratio || "2/3"}
+                      />
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+          {activePlan && (
+            <>
+              <button type="button" className="plan-nav plan-prev" aria-label={t.previous} onClick={() => navigatePlan("prev")} />
+              <button type="button" className="plan-nav plan-next" aria-label={t.next} onClick={() => navigatePlan("next")} />
+            </>
+          )}
           <p className="fineprint">{pick(SITE.priceNote, lang)}</p>
         </section>
 
-        <section className="wrap section" id="about">
-          <div className="about">
-            <figure className="about-photo">
-              <div className="marks" aria-hidden="true"><i className="tl" /><i className="tr" /><i className="bl" /><i className="br" /></div>
-              <SafeImage src={SITE.about.photo} alt={t.aboutPhoto} label={t.portraitPh} ratio="2/3" />
-            </figure>
-            <div>
-              <h2 className="section-title">{pick(SITE.about.title, lang)}</h2>
-              {SITE.about.paragraphs.map((paragraph, index) => <p className="prose" key={index}>{pick(paragraph, lang)}</p>)}
-              <ul className="chips">{SITE.about.services.map((service, index) => <li key={index}>{pick(service, lang)}</li>)}</ul>
+        <section className="about-section section" id="about">
+          <div className="wrap">
+            <div className="about">
+              <figure className="about-photo">
+                <div className="marks" aria-hidden="true"><i className="tl" /><i className="tr" /><i className="bl" /><i className="br" /></div>
+                <SafeImage src={SITE.about.photo} alt={t.aboutPhoto} label={t.portraitPh} ratio="2/3" />
+              </figure>
+              <div>
+                <h2 className="section-title">{pick(SITE.about.title, lang)}</h2>
+                {SITE.about.paragraphs.map((paragraph, index) => <p className="prose" key={index}>{pick(paragraph, lang)}</p>)}
+                <ul className="chips">{SITE.about.services.map((service, index) => <li key={index}>{pick(service, lang)}</li>)}</ul>
+              </div>
             </div>
           </div>
         </section>
