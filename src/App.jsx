@@ -345,6 +345,8 @@ export default function App() {
   const [formEmailLink, setFormEmailLink] = useState("");
   const [selectedType, setSelectedType] = useState(CATEGORIES[0]?.id || "other");
   const [message, setMessage] = useState("");
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
   const closeButton = useRef(null);
   const imageFrame = useRef(null);
   const panStart = useRef(null);
@@ -393,6 +395,64 @@ export default function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
+
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollTop = window.scrollY || document.documentElement.scrollTop;
+          const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = scrollHeight > 0 ? Math.min(1, Math.max(0, scrollTop / scrollHeight)) : 0;
+          setScrollProgress(progress);
+          setIsScrolled(scrollTop > 20);
+          document.documentElement.style.setProperty("--scroll-progress", `${progress}`);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll("[data-scroll]");
+    if (!elements.length) return undefined;
+
+    if (typeof IntersectionObserver === "undefined") {
+      elements.forEach(el => el.classList.add("is-visible"));
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.08,
+        rootMargin: "0px 0px -40px 0px"
+      }
+    );
+
+    elements.forEach(element => {
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 80 && rect.bottom > 80) {
+        element.classList.add("is-visible");
+      } else {
+        observer.observe(element);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [workCat, lang]);
 
   useEffect(() => {
     if (!workCat) return undefined;
@@ -520,7 +580,13 @@ export default function App() {
   return (
     <>
       {!category && <a className="skip" href={sectionHref("work")}>{t.skip}</a>}
-      <header className={`bar${category ? " gallery-bar" : ""}`}>
+      <header className={`bar${category ? " gallery-bar" : ""}${isScrolled ? " is-scrolled" : ""}`}>
+        <div className="scroll-progress-track" aria-hidden="true">
+          <div
+            className="scroll-progress-bar"
+            style={{ transform: `scaleX(${scrollProgress})` }}
+          />
+        </div>
         <div className="wrap">
           <a className="logo" href={sectionHref("top")} aria-label={SITE.name} onClick={event => navigateToSection(event, "top")}>
             <span className="logo-mark" aria-hidden="true" />
@@ -591,7 +657,7 @@ export default function App() {
                 <a className="btn ghost" href={sectionHref("pricing")} onClick={event => navigateToSection(event, "pricing")}>{t.viewPrices}</a>
               </div>
             </div>
-            <figure className="hero-frame">
+            <figure className="hero-frame" data-scroll="scale">
               <div className="hero-photo">
                 <div className="marks" aria-hidden="true"><i className="tl" /><i className="tr" /><i className="bl" /><i className="br" /></div>
                  <SafeImage src={SITE.heroImage} alt="" label={t.heroPh} ratio="2/3" />
@@ -608,7 +674,7 @@ export default function App() {
                 const thumbnail = cat.thumbnail || item.src;
                 const ratio = item.ratio || "4/5";
                 return (
-                  <button key={cat.id} type="button" className={`category-panel${cat.id === "car-motorbike" ? " category-panel-vehicles" : ""}`} aria-label={t.openCategory(pick(cat.name, lang))} onClick={() => openCategory(cat.id)}>
+                  <button key={cat.id} type="button" className={`category-panel${cat.id === "car-motorbike" ? " category-panel-vehicles" : ""}`} aria-label={t.openCategory(pick(cat.name, lang))} onClick={() => openCategory(cat.id)} data-scroll>
                     <span className="category-cover">
                       <SafeImage src={thumbnail} alt="" label={pick(cat.name, lang)} ratio={ratio} loading="lazy" onLoad={matchImageRatio} />
                     </span>
@@ -624,7 +690,7 @@ export default function App() {
             </div>
           ) : (
             <section className="category-detail">
-              <div className="category-heading">
+              <div className="category-heading" data-scroll>
                 <button className="category-panel-cta gallery-back" type="button" onClick={closeCategory}>{t.backToCategories}</button>
                 <h3 className="section-title">{pick(category.name, lang)}</h3>
                 <p className="prose">{pick(category.blurb, lang)}</p>
@@ -637,7 +703,15 @@ export default function App() {
                     const youtubeId = item.video && String(item.video).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/)?.[1];
                     const thumb = item.thumb || (youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : item.src);
                     return (
-                      <button key={`${item.src || item.video}-${index}`} type="button" className="tile" aria-label={t.openItem(title || t.photoPh)} onClick={() => openLightbox(index)}>
+                      <button
+                        key={`${item.src || item.video}-${index}`}
+                        type="button"
+                        className="tile"
+                        data-scroll
+                        style={{ "--tile-delay": `${(index % 6) * 0.07}s` }}
+                        aria-label={t.openItem(title || t.photoPh)}
+                        onClick={() => openLightbox(index)}
+                      >
                         <SafeImage
                           src={thumb}
                           alt={title}
@@ -658,11 +732,11 @@ export default function App() {
         </section>
 
         {!category && <>
-        <section className="wrap section" id="pricing">
-          <div className="sec-head">
+        <section className="wrap section" id="pricing" data-scroll>
+          <div className="sec-head" data-scroll>
             <h2 className="section-title">{t.pricing}</h2>
           </div>
-          <div className="plans">
+          <div className="plans" data-scroll="stagger">
             {PRICING_OPTIONS.map(option => (
                 <article
                   key={option.id}
@@ -755,37 +829,37 @@ export default function App() {
               <button type="button" className="plan-nav plan-next" aria-label={t.next} onClick={() => navigatePlan("next")} />
             </>
           )}
-          <p className="fineprint">{pick(SITE.priceNote, lang)}</p>
+          <p className="fineprint" data-scroll>{pick(SITE.priceNote, lang)}</p>
         </section>
 
-        <section className="about-section section" id="about">
+        <section className="about-section section" id="about" data-scroll>
           <div className="wrap">
             <div className="about">
-              <figure className="about-photo">
+              <figure className="about-photo" data-scroll="left">
                 <div className="marks" aria-hidden="true"><i className="tl" /><i className="tr" /><i className="bl" /><i className="br" /></div>
                 <SafeImage src={SITE.about.photo} alt={t.aboutPhoto} label={t.portraitPh} ratio="2/3" />
               </figure>
-              <div>
+              <div data-scroll="right">
                 <h2 className="section-title">{pick(SITE.about.title, lang)}</h2>
                 {SITE.about.paragraphs.map((paragraph, index) => <p className="prose" key={index}>{pick(paragraph, lang)}</p>)}
-                <ul className="chips">{SITE.about.services.map((service, index) => <li key={index}>{pick(service, lang)}</li>)}</ul>
+                <ul className="chips" data-scroll="stagger">{SITE.about.services.map((service, index) => <li key={index}>{pick(service, lang)}</li>)}</ul>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="wrap section" id="contact">
+        <section className="wrap section" id="contact" data-scroll>
           <div className="contact">
-            <div>
+            <div data-scroll="left">
               <h2 className="section-title">{t.contactTitle}</h2>
               <p className="prose">{t.contactLead}</p>
-              <div className="direct">
+              <div className="direct" data-scroll="stagger">
                 <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
                 {SITE.phone && <a href={`tel:${SITE.phone.replace(/\s+/g, "")}`}>{SITE.phone}</a>}
                 <div className="soc">{SITE.socials.map(social => <a key={social.label} href={social.url} target="_blank" rel="noopener">{social.label}</a>)}</div>
               </div>
             </div>
-            <form method="post" action={SITE.formAction || undefined} onSubmit={submitForm}>
+            <form method="post" action={SITE.formAction || undefined} onSubmit={submitForm} data-scroll="right">
               <div className="row">
                 <label><span>{t.yourName}</span><input name="name" required autoComplete="name" /></label>
                 <label><span>{t.yourEmail}</span><input name="email" type="email" required autoComplete="email" /></label>
@@ -814,7 +888,7 @@ export default function App() {
         </>}
       </main>
 
-      {!category && <footer className="site-footer">
+      {!category && <footer className="site-footer" data-scroll>
         <div className="wrap">
           <span>© {new Date().getFullYear()} {SITE.name}</span>
           <span>{pick(SITE.location, lang)}</span>
