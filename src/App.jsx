@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import "./styles.css";
 
 const SITE = {
@@ -59,7 +60,7 @@ const CATEGORIES = [
       hu: "Kötetlen portré képeim, egyedi stílusokban.",
       en: "My candid portraits, each with a distinct style."
     },
-    thumbnail: "/categories/portraits/SZV_0434-3.jpg",
+    thumbnail: "/categories/portraits/SZV_0434-3.avif",
     items: categoryImages("portraits", [
       "SZV_0433.avif",
       "SZV_0434.avif",
@@ -308,9 +309,12 @@ function updateGalleryTileSpan(image) {
   if (!image.naturalWidth || !image.naturalHeight) return;
   const tile = image.closest(".tile");
   if (!tile) return;
-  const gap = 12;
+  const grid = tile.parentElement;
+  const styles = getComputedStyle(grid);
+  const gap = parseFloat(styles.rowGap) || 0;
+  const rowHeight = parseFloat(styles.gridAutoRows) || 1;
   const imageHeight = tile.clientWidth * image.naturalHeight / image.naturalWidth;
-  tile.style.gridRowEnd = `span ${Math.ceil((imageHeight + gap) / (1 + gap))}`;
+  tile.style.gridRowEnd = `span ${Math.ceil((imageHeight + gap) / (rowHeight + gap))}`;
 }
 
 function videoEmbed(item, lang) {
@@ -466,15 +470,22 @@ export default function App() {
   }, [workCat]);
 
   useEffect(() => {
+    if (!activePlan && lightboxIndex === null) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [Boolean(activePlan), lightboxIndex]);
+
+  useEffect(() => {
     if (lightboxIndex === null) {
-      document.body.style.overflow = "";
       previousFocus.current?.focus?.();
       return undefined;
     }
     setZoomScale(1);
     setImageOffset({ x: 0, y: 0 });
     setImageDimensions(null);
-    document.body.style.overflow = "hidden";
     closeButton.current?.focus();
     const onKeyDown = event => {
       if (event.key === "Escape") setLightboxIndex(null);
@@ -495,7 +506,6 @@ export default function App() {
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.body.style.overflow = "";
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [lightboxIndex, gallery.length]);
@@ -764,71 +774,7 @@ export default function App() {
                 </article>
             ))}
           </div>
-          {activePlan && (
-            <button
-              type="button"
-              className="plan-backdrop"
-              aria-label={t.hidePlanDetails}
-              onClick={() => setExpandedPlan(null)}
-            />
-          )}
-          <div
-            className={`plan-extra${activePlanIsGroup ? " is-group" : ""}${activePlan ? " is-open" : ""}`}
-            id={activePlan ? `plan-details-${activePlan.id}` : undefined}
-            role="dialog"
-            aria-modal={activePlan ? "true" : undefined}
-            aria-hidden={!activePlan}
-            onClick={event => event.stopPropagation()}
-          >
-            {activePlan && (
-              <>
-                <button
-                  type="button"
-                  className="plan-extra-close"
-                  aria-label={t.hidePlanDetails}
-                  onClick={() => setExpandedPlan(null)}
-                >
-                  ×
-                </button>
-                <div
-                  key={activePlan.id}
-                  className={`plan-extra-content${planDirection ? ` swipe-${planDirection}` : ""}`}
-                >
-                  <h4 className="section-title">{pick(activePlan.name, lang)}</h4>
-                  <div className={`plan-extra-body${activePlanIsGroup ? " is-horizontal-example" : ""}`}>
-                    <div className="plan-extra-copy">
-                      <p className="prose">{pick(activePlan.description, lang)}</p>
-                      <ul className="plan-details">
-                        {pick(activePlan.details, lang).map(detail => <li key={detail}>{detail}</li>)}
-                      </ul>
-                      <button
-                        type="button"
-                        className="btn ghost"
-                        onClick={() => requestPackage(activePlan, activePlanCategory)}
-                      >
-                        {t.request}
-                      </button>
-                    </div>
-                    {activePlanImage && (
-                      <SafeImage
-                        className="plan-example"
-                        src={activePlanImage.src}
-                        alt=""
-                        label={t.photoPh}
-                        ratio={activePlanImage.ratio || "2/3"}
-                      />
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-          {activePlan && (
-            <>
-              <button type="button" className="plan-nav plan-prev" aria-label={t.previous} onClick={() => navigatePlan("prev")} />
-              <button type="button" className="plan-nav plan-next" aria-label={t.next} onClick={() => navigatePlan("next")} />
-            </>
-          )}
+          
           <p className="fineprint" data-scroll>{pick(SITE.priceNote, lang)}</p>
         </section>
 
@@ -894,6 +840,66 @@ export default function App() {
           <span>{pick(SITE.location, lang)}</span>
         </div>
       </footer>}
+
+      {activePlan && createPortal(
+        <>
+          <button
+            type="button"
+            className="plan-backdrop"
+            aria-label={t.hidePlanDetails}
+            onClick={() => setExpandedPlan(null)}
+          />
+          <div
+            className={`plan-extra is-open${activePlanIsGroup ? " is-group" : ""}`}
+            id={`plan-details-${activePlan.id}`}
+            role="dialog"
+            aria-modal="true"
+            onClick={event => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="plan-extra-close"
+              aria-label={t.hidePlanDetails}
+              onClick={() => setExpandedPlan(null)}
+            >
+              ×
+            </button>
+            <div
+              key={activePlan.id}
+              className={`plan-extra-content${planDirection ? ` swipe-${planDirection}` : ""}`}
+            >
+              <h4 className="section-title">{pick(activePlan.name, lang)}</h4>
+              <div className={`plan-extra-body${activePlanIsGroup ? " is-horizontal-example" : ""}`}>
+                <div className="plan-extra-copy">
+                  <p className="prose">{pick(activePlan.description, lang)}</p>
+                  <ul className="plan-details">
+                    {pick(activePlan.details, lang).map(detail => <li key={detail}>{detail}</li>)}
+                  </ul>
+                  <button
+                    type="button"
+                    className="btn ghost"
+                    onClick={() => requestPackage(activePlan, activePlanCategory)}
+                  >
+                    {t.request}
+                  </button>
+                </div>
+                {activePlanImage && (
+                  <SafeImage
+                    className="plan-example"
+                    src={activePlanImage.src}
+                    alt=""
+                    label={t.photoPh}
+                    ratio={activePlanImage.ratio || "2/3"}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+          <button type="button" className="plan-nav plan-prev" aria-label={t.previous} onClick={() => navigatePlan("prev")} />
+          <button type="button" className="plan-nav plan-next" aria-label={t.next} onClick={() => navigatePlan("next")} />
+        </>,
+        document.body
+      )}
 
       {lightboxItem && (
         <div className="lb" role="dialog" aria-modal="true" aria-label={t.viewer} onClick={event => { if (event.target === event.currentTarget) setLightboxIndex(null); }}>
