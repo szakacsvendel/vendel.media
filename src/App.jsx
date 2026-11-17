@@ -449,7 +449,8 @@ export default function App() {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
+          } else {
+            entry.target.classList.remove("is-visible");
           }
         });
       },
@@ -463,9 +464,8 @@ export default function App() {
       const rect = element.getBoundingClientRect();
       if (rect.top < window.innerHeight - 80 && rect.bottom > 80) {
         element.classList.add("is-visible");
-      } else {
-        observer.observe(element);
       }
+      observer.observe(element);
     });
 
     return () => observer.disconnect();
