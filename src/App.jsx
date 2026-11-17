@@ -316,10 +316,10 @@ function updateGalleryTileSpan(image) {
   if (!tile) return;
   const grid = tile.parentElement;
   const styles = getComputedStyle(grid);
-  const gap = parseFloat(styles.rowGap) || 0;
+  const gap = parseFloat(styles.getPropertyValue("--gallery-gap")) || 0;
   const rowHeight = parseFloat(styles.gridAutoRows) || 1;
   const imageHeight = tile.clientWidth * image.naturalHeight / image.naturalWidth;
-  tile.style.gridRowEnd = `span ${Math.ceil((imageHeight + gap) / (rowHeight + gap))}`;
+  tile.style.gridRowEnd = `span ${Math.ceil((imageHeight + gap) / rowHeight)}`;
 }
 
 function videoEmbed(item, lang) {
@@ -341,6 +341,7 @@ export default function App() {
       return "hu";
     }
   });
+  const [isMobileView, setIsMobileView] = useState(() => window.matchMedia("(max-width: 700px)").matches);
   const [theme, setTheme] = useState("dark");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [workCat, setWorkCat] = useState(null);
@@ -383,6 +384,13 @@ export default function App() {
   const t = UI[lang];
   const category = CATEGORIES.find(item => item.id === workCat);
   const gallery = category?.items || [];
+
+  useEffect(() => {
+    const mobileView = window.matchMedia("(max-width: 700px)");
+    const updateMobileView = () => setIsMobileView(mobileView.matches);
+    mobileView.addEventListener("change", updateMobileView);
+    return () => mobileView.removeEventListener("change", updateMobileView);
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -725,6 +733,7 @@ export default function App() {
                         data-scroll
                         style={{ "--tile-delay": `${(index % 6) * 0.07}s` }}
                         aria-label={t.openItem(title || t.photoPh)}
+                        disabled={isMobileView}
                         onClick={() => openLightbox(index)}
                       >
                         <SafeImage
