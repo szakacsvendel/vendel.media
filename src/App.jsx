@@ -52,6 +52,11 @@ const categoryImages = (folder, filenames) =>
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
     .map(filename => ({ src: `/categories/${folder}/${filename}` }));
 
+const gmailComposeUrl = (to, subject = "", body = "") => {
+  const params = new URLSearchParams({ view: "cm", fs: "1", to, subject, body });
+  return `https://mail.google.com/mail/?${params}`;
+};
+
 const CATEGORIES = [
   {
     id: "portrait",
@@ -233,8 +238,8 @@ const UI = {
     bookMsg: (pkg, cat, price) => `Szia, a(z) „${pkg}” csomagot szeretném foglalni ehhez: ${cat} (${price}). `,
     enquiry: (type, name) => `Fotózás iránti érdeklődés: ${type} (${name})`,
     mailName: "Név", mailEmail: "E-mail", mailType: "Típus", mailDate: "Preferált dátum", notDecided: "még nincs eldöntve",
-    formStatus: "Megnyitom az e-mail alkalmazásod. Ha nem nyílik meg, használd az alábbi e-mail linket.",
-    formEmailLink: email => `E-mail küldése: ${email}`,
+    formStatus: "Meg fog nyílni a Gmail alkalmazásod. Ha mégsem nyílik meg, használd az alábbi linket.",
+    formEmailLink: email => `Gmail megnyitása: ${email}`,
     heroPh: "Címlapfotó", portraitPh: "portré", videoPh: "videó", photoPh: "fotó",
     openItem: title => `Megnyitás: ${title}`, mostBooked: "Legnépszerűbb", lang: "Nyelv",
     lightMode: "Világos mód", darkMode: "Sötét mód", theme: "Megjelenés",
@@ -257,8 +262,8 @@ const UI = {
     bookMsg: (pkg, cat, price) => `Hi, I'd like to book the "${pkg}" package for ${cat} (${price}). `,
     enquiry: (type, name) => `Shoot enquiry: ${type} (${name})`,
     mailName: "Name", mailEmail: "Email", mailType: "Shoot type", mailDate: "Preferred date", notDecided: "not decided",
-    formStatus: "Your email app should open with your enquiry. If it doesn't, use the email link below.",
-    formEmailLink: email => `Email ${email}`,
+    formStatus: "Your Gmail app will open. If it doesn't, use the link below.",
+    formEmailLink: email => `Open Gmail: ${email}`,
     heroPh: "starterphoto", portraitPh: "portrait", videoPh: "video", photoPh: "photo",
     openItem: title => `Open ${title}`, mostBooked: "Most booked", lang: "Language",
     lightMode: "Light mode", darkMode: "Dark mode", theme: "Theme",
@@ -572,10 +577,10 @@ export default function App() {
           : t.other;
     const subject = t.enquiry(typeName, data.get("name"));
     const body = `${t.mailName}: ${data.get("name")}\n${t.mailEmail}: ${data.get("email")}\n${t.mailType}: ${typeName}\n${t.mailDate}: ${data.get("date") || t.notDecided}\n\n${data.get("message")}`;
-    const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const composeUrl = gmailComposeUrl(SITE.email, subject, body);
     setFormStatus(t.formStatus);
-    setFormEmailLink(mailto);
-    window.location.href = mailto;
+    setFormEmailLink(composeUrl);
+    window.open(composeUrl, "_blank", "noopener,noreferrer");
   };
 
   const lightboxItem = lightboxIndex === null ? null : gallery[lightboxIndex];
@@ -800,7 +805,7 @@ export default function App() {
               <h2 className="section-title">{t.contactTitle}</h2>
               <p className="prose">{t.contactLead}</p>
               <div className="direct" data-scroll="stagger">
-                <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+                <a href={gmailComposeUrl(SITE.email)} target="_blank" rel="noopener noreferrer">{SITE.email}</a>
                 {SITE.phone && <a href={`tel:${SITE.phone.replace(/\s+/g, "")}`}>{SITE.phone}</a>}
                 <div className="soc">{SITE.socials.map(social => <a key={social.label} href={social.url} target="_blank" rel="noopener">{social.label}</a>)}</div>
               </div>
