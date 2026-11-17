@@ -227,8 +227,6 @@ const UI = {
   hu: {
     skip: "Ugrás a galériához", navWork: "Galéria", navPricing: "Árak", navAbout: "Rólam", navBook: "Foglalás",
     seeWork: "Galéria megtekintése", viewPrices: "Árak megtekintése", work: "Galéria", pictures: "Kép", categoryPanels: "Kategóriák megtekintése",
-    flipToContact: "Kattints a kapcsolati adatokért", flipToPhoto: "Kattints a fényképért",
-    phoneLabel: "Telefon", emailLabel: "E-mail", instagramLabel: "Instagram",
     backToCategories: "← Vissza a kategóriákhoz", openCategory: name => `${name} kategória megnyitása`, viewCategory: "Galéria megnyitása",
     galleryPreviewNote: "Ezek előnézeti képek; a weboldal gyorsabb betöltése érdekében kisebb felbontásúak.",
     showPlanDetails: "Kattints ide a részletekért", hidePlanDetails: "Részletek elrejtése", fromBefore: "", fromAfter: "-tól",
@@ -253,8 +251,6 @@ const UI = {
   en: {
     skip: "Skip to gallery", navWork: "Gallery", navPricing: "Pricing", navAbout: "About", navBook: "Book a shoot",
     seeWork: "View the gallery", viewPrices: "View prices", work: "Gallery", pictures: "Pictures", categoryPanels: "Browse categories",
-    flipToContact: "Click to view contact details", flipToPhoto: "Click to view photo",
-    phoneLabel: "Phone", emailLabel: "Email", instagramLabel: "Instagram",
     backToCategories: "← Back to categories", openCategory: name => `Open ${name} category`, viewCategory: "View gallery",
     galleryPreviewNote: "These are preview images; their resolution has been reduced to help the website load faster.",
     showPlanDetails: "Click here for details", hidePlanDetails: "Hide details", fromBefore: "From", fromAfter: "",
@@ -350,7 +346,6 @@ export default function App() {
   });
   const [isMobileView, setIsMobileView] = useState(() => window.matchMedia("(max-width: 700px)").matches);
   const [theme, setTheme] = useState("dark");
-  const [heroCardFlipped, setHeroCardFlipped] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [workCat, setWorkCat] = useState(null);
   const [expandedPlan, setExpandedPlan] = useState(null);
@@ -688,58 +683,10 @@ export default function App() {
                 <a className="btn ghost" href={sectionHref("pricing")} onClick={event => navigateToSection(event, "pricing")}>{t.viewPrices}</a>
               </div>
             </div>
-            <figure
-              className={`hero-frame hero-card${heroCardFlipped ? " is-flipped" : ""}`}
-              role="group"
-              aria-roledescription="flippable card"
-              aria-label={heroCardFlipped ? t.flipToPhoto : t.flipToContact}
-              tabIndex={0}
-              onPointerMove={event => {
-                if (event.pointerType !== "mouse") return;
-                const bounds = event.currentTarget.getBoundingClientRect();
-                const x = (event.clientX - bounds.left) / bounds.width;
-                const y = (event.clientY - bounds.top) / bounds.height;
-                event.currentTarget.style.setProperty("--hero-card-tilt-x", `${(0.5 - y) * 6}deg`);
-                event.currentTarget.style.setProperty("--hero-card-tilt-y", `${(x - 0.5) * 6}deg`);
-              }}
-              onPointerLeave={event => {
-                event.currentTarget.style.setProperty("--hero-card-tilt-x", "0deg");
-                event.currentTarget.style.setProperty("--hero-card-tilt-y", "0deg");
-              }}
-              onClick={event => {
-                if (!event.target.closest("a")) setHeroCardFlipped(flipped => !flipped);
-              }}
-              onKeyDown={event => {
-                if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
-                  event.preventDefault();
-                  setHeroCardFlipped(flipped => !flipped);
-                }
-              }}
-            >
-              <div className="hero-card-tilt">
-                <div className="hero-card-inner">
-                  <div className="hero-card-face hero-card-front">
-                    <div className="hero-photo">
-                      <div className="marks" aria-hidden="true"><i className="tl" /><i className="tr" /><i className="bl" /><i className="br" /></div>
-                      <SafeImage src={SITE.heroImage} alt="" label={t.heroPh} ratio="2/3" />
-                    </div>
-                  </div>
-                  <div className="hero-card-face hero-card-back" aria-hidden={!heroCardFlipped} inert={!heroCardFlipped}>
-                    <div className="hero-contact-card">
-                      <p className="hero-contact-eyebrow">{pick(SITE.role, lang)}</p>
-                      <h2>{SITE.name}</h2>
-                      <a href={`tel:${SITE.phone.replace(/[^\d+]/g, "")}`} onClick={event => event.stopPropagation()}>
-                        <span>{t.phoneLabel}</span>{SITE.phone}
-                      </a>
-                      <a href={`mailto:${SITE.email}`} onClick={event => event.stopPropagation()}>
-                        <span>{t.emailLabel}</span>{SITE.email}
-                      </a>
-                      <a href={SITE.socials.find(social => social.label === "Instagram").url} target="_blank" rel="noreferrer" onClick={event => event.stopPropagation()}>
-                        <span>{t.instagramLabel}</span>@vendel.media
-                      </a>
-                    </div>
-                  </div>
-                </div>
+            <figure className="hero-frame" data-scroll="scale">
+              <div className="hero-photo">
+                <div className="marks" aria-hidden="true"><i className="tl" /><i className="tr" /><i className="bl" /><i className="br" /></div>
+                 <SafeImage src={SITE.heroImage} alt="" label={t.heroPh} ratio="2/3" />
               </div>
             </figure>
           </section>
