@@ -42,8 +42,8 @@ const SITE = {
     ]
   },
   priceNote: {
-    hu: "Az árak kiindulási díjak, és tartalmazzák az utómunkát. A Budapesten kívüli utazás külön díjas. A képek digitálisan érkeznek; az átadás általában 1–2 nap (a munka terjedelmétől függ). A fotózás időtartamát, az átadott képek vagy videók mennyiségét és a felhasználási feltételeket foglalás előtt egyeztetjük.",
-    en: "Prices are starting rates and include editing. Travel outside Budapest is charged separately. Images are delivered digitally, usually within 1–2 days depending on the scope. Shoot duration, the number of delivered images or videos, and usage terms are agreed before booking."
+    hu: "Az árak kiindulási díjak, és tartalmazzák az utómunkát. A Budapesten kívüli utazás díja 250 Ft/km. A képek digitálisan érkeznek; az átadás általában 2-3 nap (a munka terjedelmétől függ). A fotózás időtartamát, az átadott képek vagy videók mennyiségét és a felhasználási feltételeket foglalás előtt egyeztetjük.",
+    en: "Prices are starting rates and include editing. Travel outside Budapest is charged at 250 HUF/km. Images are delivered digitally, usually within 2-3 days depending on the scope. Shoot duration, the number of delivered images or videos, and usage terms are agreed before booking."
   }
 };
 
