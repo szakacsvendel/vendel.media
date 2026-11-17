@@ -66,6 +66,7 @@ const CATEGORIES = [
       en: "My candid portraits, each with a distinct style."
     },
     thumbnail: "/categories/portraits/SZV_0434-3.avif",
+    mobileThumbnail: "/categories/portraits/SZV_0434.avif",
     items: categoryImages("portraits", [
       "SZV_0433.avif",
       "SZV_0434.avif",
@@ -91,7 +92,8 @@ const CATEGORIES = [
       hu: "Forma, részletek, hangulat - autókról és motorokról, akár eladáshoz, akár csak felvágni.",
       en: "Shape, detail and character - cars and bikes, whether for a sale or simply because it is cool."
     },
-    thumbnail: "/categories/vehicles/SZV_0566.avif",
+    thumbnail: "/categories/vehicles/SZV_0568.avif",
+    mobileThumbnail: "/categories/vehicles/SZV_0568.avif",
     items: categoryImages("vehicles", [
       "SZV_0387-Enhanced-NR.avif",
       "SZV_0392-Enhanced-NR.avif",
@@ -122,6 +124,7 @@ const CATEGORIES = [
       en: "Photography of events - the big moments and the small details that make them worth remembering."
     },
     thumbnail: "/categories/events/SZV_0055.avif",
+    mobileThumbnail: "/categories/events/SZV_0052.avif",
     items: categoryImages("events", [
       "SZV_0034.avif",
       "SZV_0040.avif",
@@ -699,7 +702,10 @@ export default function App() {
                 return (
                   <button key={cat.id} type="button" className={`category-panel${cat.id === "car-motorbike" ? " category-panel-vehicles" : ""}`} aria-label={t.openCategory(pick(cat.name, lang))} onClick={() => openCategory(cat.id)} data-scroll>
                     <span className="category-cover">
+                      <picture>
+                        <source media="(max-width: 700px)" srcSet={cat.mobileThumbnail || thumbnail} />
                       <SafeImage src={thumbnail} alt="" label={pick(cat.name, lang)} ratio={ratio} loading="lazy" onLoad={matchImageRatio} />
+                      </picture>
                     </span>
                     <span className="category-panel-content">
                       <span className="category-panel-title">{pick(cat.name, lang)}</span>
