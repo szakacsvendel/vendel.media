@@ -333,6 +333,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem}
   .plan-backdrop{inset:0;width:100vw;height:100dvh}
   .plan-extra,.plan-extra.is-group{top:50dvh;left:50vw;bottom:auto;width:calc(100vw - 2rem);max-height:calc(100dvh - 2rem - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain;transform:translate(-50%,-50%)}
   .plan-extra.is-group{height:auto}
+  .plan-example{height:auto;max-height:none;aspect-ratio:auto;object-fit:contain}
   .category-panel{min-height:calc(100dvh - 5.5rem);padding:max(1.25rem,env(safe-area-inset-top)) max(1.25rem,env(safe-area-inset-right)) max(1.5rem,env(safe-area-inset-bottom)) max(1.25rem,env(safe-area-inset-left))}
   .category-panel-title{font-size:clamp(2.2rem,10vw,3.8rem)}
   .category-panel-description{font-size:1rem}
@@ -497,9 +498,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem}
   .plan-extra-copy{gap:.75rem}
   .plan-extra-copy .plan-details{font-size:.9rem}
   .plan-extra-copy .btn{min-height:2.75rem}
-  .plan-example{height:min(38dvh,18rem);object-fit:contain}
+  .plan-example{height:auto;max-height:none;aspect-ratio:auto;background:transparent;object-fit:contain}
   .plan-extra-body.is-horizontal-example .plan-example,
-  .plan-extra.is-group .plan-extra-body.is-horizontal-example .plan-example{height:auto;max-height:24dvh;aspect-ratio:3/2;object-fit:contain}
+  .plan-extra.is-group .plan-extra-body.is-horizontal-example .plan-example{height:auto;max-height:none;aspect-ratio:auto;object-fit:contain}
   .plan-nav{width:2rem;height:2rem}
   .plan-prev{left:.2rem}
   .plan-next{right:.2rem}

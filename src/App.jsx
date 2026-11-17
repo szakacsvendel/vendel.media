@@ -139,8 +139,8 @@ const PRICING_OPTIONS = [
       en: "Stylish, personalized portrait photography."
     },
     details: {
-      hu: ["Igényeidhez igazított fotózás", "Kötetlen pózok, természetes beállítások", "Válogatott képek gondos utómunkával", "Digitális kézbesítés"],
-      en: ["A shoot tailored to your needs", "Relaxed poses and natural direction", "Selected images carefully edited", "Digital delivery"]
+      hu: ["Igényeidhez igazított fotózás", "Kötetlen pózok, természetes beállítások", "Válogatott képek gondos utómunkával", "Válogatott, szerkesztett digitális képek"],
+      en: ["A shoot tailored to your needs", "Relaxed poses and natural direction", "Selected images carefully edited", "A selection of edited digital images"]
     }
   },
   {
@@ -153,7 +153,7 @@ const PRICING_OPTIONS = [
       en: "Natural, personalized photography to capture special family moments."
     },
     details: {
-      hu: ["Közös képek az egész családról", "Természetes, játékos pillanatok", "A helyszínhez igazított fotózás", "Válogatott, utómunkázott digitális képek"],
+      hu: ["Közös képek az egész családról", "Természetes, játékos pillanatok", "A helyszínhez igazított fotózás", "Válogatott, szerkesztett digitális képek"],
       en: ["Group portraits of the whole family", "Natural, playful moments", "A shoot planned around your location", "A selection of edited digital images"]
     }
   },
@@ -167,8 +167,8 @@ const PRICING_OPTIONS = [
       en: "Consistent, professional portraits and group photos for a team or a class."
     },
     details: {
-      hu: ["Egyéni portrék a tagokról", "Közös csoportkép", "Egységes, profi megjelenés", "Utómunkázott digitális képek"],
-      en: ["Individual portraits of team members", "A group photo of the whole team", "A consistent, professional look", "Edited digital images"]
+      hu: ["Egyéni portrék a tagokról", "Közös csoportkép", "Egységes, profi megjelenés", "Válogatott, szerkesztett digitális képek"],
+      en: ["Individual portraits of team members", "A group photo of the whole team", "A consistent, professional look", "A selection of edited digital images"]
     }
   },
   {
@@ -181,8 +181,8 @@ const PRICING_OPTIONS = [
       en: "Detailed photos of your car or motorcycle."
     },
     details: {
-      hu: ["Külső és belső nézetek", "Jellegzetes részletek megörökítése", "A jármű stílusához illő helyszín", "Válogatott, utómunkázott képek"],
-      en: ["Exterior and interior views", "Attention to distinctive details", "A location that suits the vehicle", "A selection of edited images"]
+      hu: ["Külső és belső nézetek", "Jellegzetes részletek megörökítése", "A jármű stílusához illő helyszín", "Válogatott, szerkesztett digitális képek"],
+      en: ["Exterior and interior views", "Attention to distinctive details", "A location that suits the vehicle", "A selection of edited digital images"]
     }
   },
   {
@@ -209,7 +209,7 @@ const PRICING_OPTIONS = [
       en: "Capturing the key moments and atmosphere of your event."
     },
     details: {
-      hu: ["Fontos pillanatok és spontán jelenetek", "A helyszín és a hangulat megörökítése", "Részletfotók az eseményről", "Válogatott, utómunkázott digitális képek"],
+      hu: ["Fontos pillanatok és spontán jelenetek", "A helyszín és a hangulat megörökítése", "Részletfotók az eseményről", "Válogatott, szerkesztett digitális képek"],
       en: ["Key moments and candid scenes", "The venue and atmosphere captured", "Detail photos from the event", "A selection of edited digital images"]
     }
   }
